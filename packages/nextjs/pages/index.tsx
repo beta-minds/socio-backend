@@ -1,24 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
-// import { Contract, ethers } from "ethers";
 import type { NextPage } from "next";
 import { useContractRead } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { getParsedError } from "~~/components/scaffold-eth";
-import { getParsedContractFunctionArgs } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Home: NextPage = () => {
-  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo("YourContract");
-  console.log({ deployedContractData, deployedContractLoading });
-  const { isFetching, refetch } = useContractRead({
+  const { data: deployedContractData } = useDeployedContractInfo("YourContract");
+  const { refetch } = useContractRead({
     address: deployedContractData?.address,
     functionName: "getUsername",
     abi: deployedContractData?.abi,
-    // args: getParsedContractFunctionArgs(form),
-    args: undefined,
+    // args: ["random123"],
     enabled: false,
     onError: (error: any) => {
       const parsedErrror = getParsedError(error);
