@@ -1,41 +1,70 @@
-//SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-// Useful for debugging. Remove when deploying to a live network.
 import "hardhat/console.sol";
 
-// Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
-// import "@openzeppelin/contracts/access/Ownable.sol";
-
-/**
- * A smart contract that allows changing a state variable of the contract and tracking the changes
- * It also allows the owner to withdraw the Ether in the contract
- * @author BuidlGuidl
- */
-contract YourContract {mapping(address => string) private usernames;
+contract YourContract {
+	mapping(address => string) private usernames;
+	mapping(string => address) private addresses;
+	mapping(address => address[]) private friends;
+	string[] private usernameList;
+	mapping(address => string[]) private cids;
 	address[] private userList;
 
 	event UsernameSet(address indexed userAddress, string username);
+  event CIDSet(address indexed userAddress, string cid);
+	event FriendAdded(address indexed userAddress, address friendAddress);
 
 	function setUsername(string calldata username) external {
-			if(bytes(usernames[msg.sender]).length == 0) {
-					userList.push(msg.sender);
-			}
-			usernames[msg.sender] = username;
+		require(bytes(username).length > 0, "Username cannot be empty");
+		require(
+			bytes(usernames[msg.sender]).length == 0,
+			"Username already set"
+		);
 
-			emit UsernameSet(msg.sender, username);
+		usernames[msg.sender] = username;
+		addresses[username] = msg.sender;
+		usernameList.push(username);
+
+		emit UsernameSet(msg.sender, username);
 	}
 
-	function getUsername(address userAddress) external view returns (string memory) {
-			return usernames[userAddress];
+	function addCID(string calldata cid) external {
+		cids[msg.sender].push(cid);
+
+		emit CIDSet(msg.sender, cid);
 	}
 
-	function getUsernames(address[] calldata addresses) external view returns (string[] memory) {
-			string[] memory names = new string[](addresses.length);
-			for(uint i = 0; i < addresses.length; i++) {
-					names[i] = usernames[addresses[i]];
-			}
-			return names;
+	function addFriend(address friendAddress) external {
+		friends[msg.sender].push(friendAddress);
+
+		emit FriendAdded(msg.sender, friendAddress);
+	}
+
+	function getUsername() external view returns (string memory) {
+		return usernames[msg.sender];
+	}
+
+	function getAddressByUsername(
+		string calldata username
+	) external view returns (address) {
+		return addresses[username];
+	}
+
+	function getCIDs(string calldata username) external view returns (string[] memory) {
+		return cids[msg.sender];
+	}
+
+	function getFriends(string calldata username) external view returns (address[] memory) {
+		return friends[msg.sender];
+	}
+
+	function getUsernames(
+		address[] calldata userAddresses
+	) external view returns (string[] memory) {
+		string[] memory names = new string[](userAddresses.length);
+		for (uint i = 0; i < userAddresses.length; i++) {
+			names[i] = usernames[userAddresses[i]];
+		}
+		return names;
 	}
 }
-
