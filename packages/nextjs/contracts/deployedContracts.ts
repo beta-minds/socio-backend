@@ -152,53 +152,36 @@ const deployedContracts = {
   },
   84531: {
     YourContract: {
-      address: "0xFdcec369CfF196e574Eeb6568a3289816B0C82e9",
+      address: "0x3a82a0654Ef694743416B8F2344B120e82593dCb",
       abi: [
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "constructor",
-        },
         {
           anonymous: false,
           inputs: [
             {
               indexed: true,
               internalType: "address",
-              name: "greetingSetter",
+              name: "userAddress",
               type: "address",
             },
             {
               indexed: false,
               internalType: "string",
-              name: "newGreeting",
+              name: "username",
               type: "string",
             },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
           ],
-          name: "GreetingChange",
+          name: "UsernameSet",
           type: "event",
         },
         {
-          inputs: [],
-          name: "greeting",
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
+          name: "getUsername",
           outputs: [
             {
               internalType: "string",
@@ -210,26 +193,19 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "owner",
-          outputs: [
+          inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
+              internalType: "address[]",
+              name: "addresses",
+              type: "address[]",
             },
           ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
+          name: "getUsernames",
           outputs: [
             {
-              internalType: "bool",
+              internalType: "string[]",
               name: "",
-              type: "bool",
+              type: "string[]",
             },
           ],
           stateMutability: "view",
@@ -239,57 +215,14 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "string",
-              name: "_newGreeting",
+              name: "username",
               type: "string",
             },
           ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
+          name: "setUsername",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
         },
       ],
       inheritedFunctions: {},
