@@ -1,9 +1,36 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
+// import { Contract, ethers } from "ethers";
 import type { NextPage } from "next";
+import { useContractRead } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
+import { getParsedError } from "~~/components/scaffold-eth";
+import { getParsedContractFunctionArgs } from "~~/components/scaffold-eth";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { notification } from "~~/utils/scaffold-eth";
 
 const Home: NextPage = () => {
+  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo("YourContract");
+  console.log({ deployedContractData, deployedContractLoading });
+  const { isFetching, refetch } = useContractRead({
+    address: deployedContractData?.address,
+    functionName: "getUsername",
+    abi: deployedContractData?.abi,
+    // args: getParsedContractFunctionArgs(form),
+    args: undefined,
+    enabled: false,
+    onError: (error: any) => {
+      const parsedErrror = getParsedError(error);
+      notification.error(parsedErrror);
+    },
+  });
+
+  const handleSmartContract = async () => {
+    const { data } = await refetch();
+    console.log({ data });
+  };
+
   return (
     <>
       <MetaHeader />
@@ -12,6 +39,7 @@ const Home: NextPage = () => {
           <h1 className="text-center mb-8">
             <span className="block text-2xl mb-2">Welcome to</span>
             <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <button onClick={handleSmartContract}>Test</button>
           </h1>
           <p className="text-center text-lg">
             Get started by editing{" "}
