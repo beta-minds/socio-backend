@@ -5,21 +5,25 @@ import "hardhat/console.sol";
 contract YourContract {
 	mapping(address => string) private usernames;
 	mapping(string => address) private addresses;
-	mapping(address => address[]) private friends;
+	mapping(address => address[]) private connections;
+	mapping(address => address[]) private connectionRequests;
 	string[] private usernameList;
-	mapping(address => string[]) private cids;
 	address[] private userList;
 
 	event UsernameSet(address indexed userAddress, string username);
-  event CIDSet(address indexed userAddress, string cid);
-	event FriendAdded(address indexed userAddress, address friendAddress);
+	event ConnectionRequestSent(address indexed fromAddress, address toAddress);
+	event ConnectionAdded(
+		address indexed userAddress,
+		address connectionAddress
+	);
 
 	function setUsername(string calldata username) external {
 		require(bytes(username).length > 0, "Username cannot be empty");
 		require(
 			bytes(usernames[msg.sender]).length == 0,
-			"Username already set"
+			"Username already set for this address"
 		);
+		require(addresses[username] == address(0), "Username already taken");
 
 		usernames[msg.sender] = username;
 		addresses[username] = msg.sender;
@@ -28,16 +32,28 @@ contract YourContract {
 		emit UsernameSet(msg.sender, username);
 	}
 
-	function addCID(string calldata cid) external {
-		cids[msg.sender].push(cid);
+	function sendConnectionRequest(address toAddress) external {
+		connectionRequests[toAddress].push(msg.sender);
 
-		emit CIDSet(msg.sender, cid);
+		emit ConnectionRequestSent(msg.sender, toAddress);
 	}
 
-	function addFriend(address friendAddress) external {
-		friends[msg.sender].push(friendAddress);
+	function acceptConnectionRequest(address fromAddress) external {
+		connections[msg.sender].push(fromAddress);
+		connections[fromAddress].push(msg.sender);
 
-		emit FriendAdded(msg.sender, friendAddress);
+		// Remove the connection request
+		for (uint i = 0; i < connectionRequests[msg.sender].length; i++) {
+			if (connectionRequests[msg.sender][i] == fromAddress) {
+				connectionRequests[msg.sender][i] = connectionRequests[
+					msg.sender
+				][connectionRequests[msg.sender].length - 1];
+				connectionRequests[msg.sender].pop();
+				break;
+			}
+		}
+
+		emit ConnectionAdded(msg.sender, fromAddress);
 	}
 
 	function getUsername() external view returns (string memory) {
@@ -50,12 +66,12 @@ contract YourContract {
 		return addresses[username];
 	}
 
-	function getCIDs(string calldata username) external view returns (string[] memory) {
-		return cids[msg.sender];
+	function getConnections() external view returns (address[] memory) {
+		return connections[msg.sender];
 	}
 
-	function getFriends(string calldata username) external view returns (address[] memory) {
-		return friends[msg.sender];
+	function getConnectionRequests() external view returns (address[] memory) {
+		return connectionRequests[msg.sender];
 	}
 
 	function getUsernames(
