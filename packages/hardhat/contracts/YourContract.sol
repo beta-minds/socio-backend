@@ -17,6 +17,11 @@ contract YourContract {
 		address connectionAddress
 	);
 
+	struct User {
+		address userAddress;
+		string username;
+	}
+
 	function setUsername(string calldata username) external {
 		require(bytes(username).length > 0, "Username cannot be empty");
 		require(
@@ -56,8 +61,10 @@ contract YourContract {
 		emit ConnectionAdded(msg.sender, fromAddress);
 	}
 
-	function getUsername() external view returns (string memory) {
-		return usernames[msg.sender];
+	function getUsername(
+		address userAddress
+	) external view returns (string memory) {
+		return usernames[userAddress];
 	}
 
 	function getAddressByUsername(
@@ -66,12 +73,32 @@ contract YourContract {
 		return addresses[username];
 	}
 
-	function getConnections() external view returns (address[] memory) {
-		return connections[msg.sender];
+	function getConnections(
+		address userAddress
+	) external view returns (User[] memory) {
+		address[] memory connectionAddresses = connections[userAddress];
+		User[] memory connectionUsers = new User[](connectionAddresses.length);
+		for (uint i = 0; i < connectionAddresses.length; i++) {
+			connectionUsers[i] = User(
+				connectionAddresses[i],
+				usernames[connectionAddresses[i]]
+			);
+		}
+		return connectionUsers;
 	}
 
-	function getConnectionRequests() external view returns (address[] memory) {
-		return connectionRequests[msg.sender];
+	function getConnectionRequests(
+		address userAddress
+	) external view returns (User[] memory) {
+		address[] memory requestAddresses = connectionRequests[userAddress];
+		User[] memory requestUsers = new User[](requestAddresses.length);
+		for (uint i = 0; i < requestAddresses.length; i++) {
+			requestUsers[i] = User(
+				requestAddresses[i],
+				usernames[requestAddresses[i]]
+			);
+		}
+		return requestUsers;
 	}
 
 	function getUsernames(
