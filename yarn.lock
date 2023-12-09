@@ -9901,7 +9901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^6.7.1":
+"ethers@npm:^6.7.1, ethers@npm:^6.9.0":
   version: 6.9.0
   resolution: "ethers@npm:6.9.0"
   dependencies:
@@ -14013,6 +14013,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-runtime-dotenv@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "next-runtime-dotenv@npm:1.5.1"
+  dependencies:
+    dotenv: ^16.0.0
+  peerDependencies:
+    next: ">= 5.1.0"
+  checksum: 929b9a736b528f8fa1c722acf19fa803ceacf01aa776591f7fec349b0d471b89a15b1626a74f1a103e2892c9851e24ab48b9cf8bffc44d88b5f396a373db6576
+  languageName: node
+  linkType: hard
+
 "next@npm:~13.1.6":
   version: 13.1.6
   resolution: "next@npm:13.1.6"
@@ -16365,8 +16376,10 @@ __metadata:
     "@lighthouse-web3/sdk": ^0.3.0
     "@types/crypto-js": ^4
     crypto-js: ^4.2.0
+    ethers: ^6.9.0
     husky: ~8.0.3
     lint-staged: ~13.2.2
+    next-runtime-dotenv: ^1.5.1
   languageName: unknown
   linkType: soft
 
