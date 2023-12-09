@@ -8,7 +8,8 @@ export const SwitchTheme = ({ className }: { className?: string }) => {
 
   useEffect(() => {
     const body = document.body;
-    body.setAttribute("data-theme", isDarkMode ? "scaffoldEthDark" : "scaffoldEth");
+    //TODO: add new ui theme
+    body.setAttribute("data-theme", "mytheme");
   }, [isDarkMode]);
 
   return (
