@@ -8,22 +8,31 @@ module.exports = {
     themes: [
       {
         scaffoldEth: {
-          primary: "#93BBFB",
-          "primary-content": "#212638",
-          secondary: "#DAE8FF",
-          "secondary-content": "#212638",
-          accent: "#93BBFB",
-          "accent-content": "#212638",
-          neutral: "#212638",
-          "neutral-content": "#ffffff",
-          "base-100": "#ffffff",
-          "base-200": "#f4f8ff",
-          "base-300": "#DAE8FF",
-          "base-content": "#212638",
-          info: "#93BBFB",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
+          daisyui: {
+            themes: [
+              {
+                mytheme: {
+                  primary: "#111827",
+
+                  secondary: "#4b5563",
+
+                  accent: "#f3f4f6",
+
+                  neutral: "#fecaca",
+
+                  "base-100": "#f3f4f6",
+
+                  info: "#dcfce7",
+
+                  success: "#ecfccb",
+
+                  warning: "#fee2e2",
+
+                  error: "#fca5a5",
+                },
+              },
+            ],
+          },
 
           "--rounded-btn": "9999rem",
 
