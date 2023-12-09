@@ -1,16 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 
 function FileUpload() {
+  const [loading, setloading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [file, setFile] = useState(null);
+  const [selectedShareWithFile, setSelectedShareWithFile] = useState([]);
+  const [shareWith, setShareWith] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
 
+  const isShareModalDisabled = selectedShareWithFile.length > 0;
   const apiKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
   console.log(apiKey);
 
-  const progressCallback = (data: any) => {
-    console.log(data);
+  const progressCallback = useCallback((data: any) => {
+    setProgress(data.progress);
+  }, []);
+
+  const handleShareWith = () => {
+    if (selectedShareWithFile.length > 0) {
+      // change this
+      setSelectedShareWithFile([]);
+    }
+  };
+
+  const handleIsPublicChange = () => {
+    setIsPublic(!isPublic);
+  };
+
+  const handleSearchChange = (e: any) => {
+    setSearchName(e.target.value);
+    //TODO: change this logic
+    if (e.target.value.length > 0) {
+      // change this
+      setShareWith([]);
+    } else {
+      setShareWith([]);
+    }
+  };
+
+  const handleModalCancel = () => {
+    const modalElement = document.getElementById("file_upload");
+    //@ts-ignore
+    modalElement.style.display = "none";
   };
 
   // Function to sign the authentication message using Wallet
@@ -47,7 +82,7 @@ function FileUpload() {
       console.error("No file selected.");
       return;
     }
-
+    setloading(true);
     try {
       // This signature is used for authentication with encryption nodes
       // If you want to avoid signatures on every upload refer to JWT part of encryption authentication section
@@ -73,6 +108,9 @@ function FileUpload() {
         }
       */
       // If successful, log the URL for accessing the file
+      setloading(false);
+      //@ts-ignore
+      document.getElementById("file_upload").showModal();
       console.log(`Decrypt at https://decrypt.mesh3.network/evm/${output.data[0].Hash}`);
     } catch (error) {
       console.error("Error uploading encrypted file:", error);
@@ -89,10 +127,67 @@ function FileUpload() {
 
   return (
     <div className="App">
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={uploadEncryptedFile} disabled={!file}>
-        Upload Encrypted File
-      </button>
+      <input type="file" className="file-input w-full max-w-xs" onChange={handleFileChange} />
+      <div className="mb-8">
+        {loading ? (
+          <progress className="progress progress-primary w-56" value={progress} max="100"></progress>
+        ) : (
+          <button onClick={uploadEncryptedFile} className="file-input w-full max-w-xs" disabled={!file}>
+            Upload Encrypted File
+          </button>
+        )}
+      </div>
+      <dialog id="file_upload" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+          <h3 className="font-bold text-lg">Share your Files</h3>
+          <p className="py-4">Select the list of persons you want to share file with</p>
+          <div className="m-2 mt-4 mb-8">
+            <input type="checkbox" className="toggle toggle-md" checked={isPublic} onChange={handleIsPublicChange} />
+            <span className="ml-2">Make your file {isPublic ? "Private" : "Public"}</span>
+          </div>
+          <input
+            type="text"
+            placeholder="Search Name"
+            className="input input-bordered input-primary w-full max-w-xs"
+            onChange={handleSearchChange}
+            value={searchName}
+          />
+          {shareWith.map((item, index) => {
+            return (
+              <div className="flex flex-row justify-between items-center mt-4" key={index}>
+                <div className="flex flex-row items-center">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4 text-primary"
+                    checked={selectedShareWithFile.includes(item)}
+                    onChange={() => {
+                      if (selectedShareWithFile.includes(item)) {
+                        setSelectedShareWithFile(selectedShareWithFile.filter(i => i !== item));
+                      } else {
+                        setSelectedShareWithFile([...selectedShareWithFile, item]);
+                      }
+                    }}
+                  />
+                  <span className="ml-2">{item}</span>
+                </div>
+                <button className="btn btn-ghost btn-sm">View</button>
+              </div>
+            );
+          })}
+          <div className="flex flex-row justify-between mt-4">
+            <button className="btn btn-primary" disabled={isShareModalDisabled} onClick={handleShareWith}>
+              Share
+            </button>
+            <button className="btn btn-ghost" onClick={handleModalCancel}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
