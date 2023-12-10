@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import lighthouse from "@lighthouse-web3/sdk";
 
 function FileUpload() {
@@ -13,7 +12,6 @@ function FileUpload() {
   const [shareWith, setShareWith] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [isPublic, setIsPublic] = useState(false);
-  const [cids, setCids] = useLocalStorage("cids", []);
 
   const isShareModalDisabled = selectedShareWithFile.length > 0;
   const apiKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
@@ -116,21 +114,8 @@ function FileUpload() {
         }
       */
       // If successful, log the URL for accessing the file
-      const cid = output.data[0].Hash;
       setloading(false);
-      setCids([
-        ...cids,
-        {
-          cid: cid,
-          name: output.data[0].Name,
-          size: output.data[0].Size,
-        },
-      ]);
       setSteps(2);
-      console.log("outPut", output);
-
-      const fileinfo = await lighthouse.getFileInfo(cid);
-      console.log("fileInfo", fileinfo);
 
       console.log(`Decrypt at https://decrypt.mesh3.network/evm/${output.data[0].Hash}`);
     } catch (error) {
