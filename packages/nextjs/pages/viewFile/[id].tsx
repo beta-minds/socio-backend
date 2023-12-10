@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
@@ -9,6 +10,10 @@ function ViewFile() {
   const router = useRouter();
   const { id } = router.query;
   const [fileURL, setFileURL] = React.useState(null);
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get("file");
+  console.log("search", search);
 
   const encryptionSignature = async () => {
     // @ts-ignore
@@ -64,22 +69,20 @@ function ViewFile() {
   };
   const handleRenderBlobUrl = (blob: any) => {
     if (fileURL) {
-      return <img src={blob} alt="" />;
+      return <img src={blob} width="800" height="1000" />;
     }
     return <div> File Format is not supported yet!</div>;
   };
 
   return (
-    <div className="App">
-      <button onClick={() => decrypt()}>decrypt</button>
-      <h1>Route Parameter: {id}</h1>
-
+    <div className="mt-16 flex flex-col gap-4 justify-center items-center">
       {fileURL ? (
-        <a href={fileURL} target="_blank" rel="noreferrer">
-          viewFile
-        </a>
-      ) : null}
-      {fileURL ? handleRenderBlobUrl(fileURL) : null}
+        handleRenderBlobUrl(fileURL)
+      ) : (
+        <button className="btn btn-primary" onClick={() => decrypt()}>
+          View File
+        </button>
+      )}
     </div>
   );
 }
