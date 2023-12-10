@@ -15,6 +15,7 @@ function FileUpload() {
   const [file, setFile] = useState(null);
   const [selectedShareWithFile, setSelectedShareWithFile] = useState([]);
   const [shareWith, setShareWith] = useState([]);
+  const [encryptionAuthState, setEncryptionAuthState] = useState();
 
   const [cids, setCids] = useLocalStorage("cids", []);
 
@@ -34,7 +35,6 @@ function FileUpload() {
     },
   });
 
-  const isShareModalDisabled = selectedShareWithFile.length > 0;
   const apiKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
   console.log(apiKey);
 
@@ -42,10 +42,19 @@ function FileUpload() {
     setProgress(data.progress);
   }, []);
 
-  const handleShareWith = () => {
+  const handleShareWith = async () => {
     if (selectedShareWithFile.length > 0) {
-      // change this
-      setSelectedShareWithFile([]);
+      // @ts-ignore
+      const promise = lighthouse.shareFile(
+        // @ts-ignore
+        walletClient?.account?.address,
+        shareWith.map(({ userAddress }) => userAddress),
+        cids[0].cid,
+        // @ts-ignore
+        encryptionAuthState.signature,
+      );
+      const res = await promise;
+      console.log({ res });
     }
   };
 
@@ -103,6 +112,9 @@ function FileUpload() {
         console.error("Failed to sign the message.");
         return;
       }
+
+      // @ts-ignore
+      setEncryptionAuthState(encryptionAuth);
 
       const { signature, signerAddress } = encryptionAuth;
 
@@ -209,7 +221,7 @@ function FileUpload() {
           );
         })}
         <div className="flex flex-row justify-between mt-4">
-          <button className="btn btn-primary" disabled={isShareModalDisabled} onClick={handleShareWith}>
+          <button className="btn btn-primary" onClick={handleShareWith}>
             Share
           </button>
           <button className="btn btn-ghost" onClick={handleModalCancel}>
