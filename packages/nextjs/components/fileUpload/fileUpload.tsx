@@ -2,7 +2,11 @@
 
 import React, { useCallback, useState } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { getParsedError } from "../scaffold-eth";
 import lighthouse from "@lighthouse-web3/sdk";
+import { useContractRead, useWalletClient } from "wagmi";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { notification } from "~~/utils/scaffold-eth";
 
 function FileUpload() {
   const [loading, setloading] = useState(false);
@@ -13,7 +17,24 @@ function FileUpload() {
   const [shareWith, setShareWith] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [isPublic, setIsPublic] = useState(false);
+
   const [cids, setCids] = useLocalStorage("cids", []);
+
+  const { data: walletClient } = useWalletClient();
+
+  const { data: deployedContractData } = useDeployedContractInfo("YourContract");
+  const { refetch: getConnectionsList } = useContractRead({
+    address: deployedContractData?.address,
+    functionName: "getConnections",
+    abi: deployedContractData?.abi,
+    // @ts-ignore
+    args: [walletClient?.account?.address],
+    enabled: false,
+    onError: (error: any) => {
+      const parsedErrror = getParsedError(error);
+      notification.error(parsedErrror);
+    },
+  });
 
   const isShareModalDisabled = selectedShareWithFile.length > 0;
   const apiKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
@@ -127,7 +148,14 @@ function FileUpload() {
         },
       ]);
       setSteps(2);
-      console.log("outPut", output);
+
+      const { data } = await getConnectionsList();
+
+      if (data) {
+        // @ts-ignore
+        // setConnections(data);
+        setShareWith(data);
+      }
 
       const fileinfo = await lighthouse.getFileInfo(cid);
       console.log("fileInfo", fileinfo);
@@ -184,25 +212,27 @@ function FileUpload() {
           onChange={handleSearchChange}
           value={searchName}
         />
-        {shareWith.map((item, index) => {
+        {shareWith.map(({ userAddress, username }) => {
           return (
-            <div className="flex flex-row justify-between items-center mt-4" key={index}>
+            <div className="flex flex-row justify-between items-center mt-4" key={userAddress}>
               <div className="flex flex-row items-center">
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-primary"
-                  checked={selectedShareWithFile.includes(item)}
+                  checked={selectedShareWithFile.includes(userAddress)}
                   onChange={() => {
-                    if (selectedShareWithFile.includes(item)) {
-                      setSelectedShareWithFile(selectedShareWithFile.filter(i => i !== item));
+                    if (selectedShareWithFile.includes(userAddress)) {
+                      setSelectedShareWithFile(
+                        selectedShareWithFile.filter(currAddress => currAddress !== userAddress),
+                      );
                     } else {
-                      setSelectedShareWithFile([...selectedShareWithFile, item]);
+                      setSelectedShareWithFile(prev => [...prev, userAddress]);
                     }
                   }}
                 />
-                <span className="ml-2">{item}</span>
+                <span className="ml-2">{username}</span>
+                <span className="ml-2">({userAddress})</span>
               </div>
-              <button className="btn btn-ghost btn-sm">View</button>
             </div>
           );
         })}
