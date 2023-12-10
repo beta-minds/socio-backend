@@ -12,10 +12,10 @@ type HeaderMenuLink = {
 };
 
 export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-  },
+  // {
+  //   label: "Home",
+  //   href: "/",
+  // },
   // {
   //   label: "Debug Contracts",
   //   href: "/debug",
@@ -96,6 +96,9 @@ export const Header = () => {
         </ul>
       </div>
       <div className="navbar-end flex-grow mr-4">
+        {/* <Link href="/userName">
+          <button className="btn secondary">Get Your user name</button>
+        </Link> */}
         <RainbowKitCustomConnectButton />
         <FaucetButton />
       </div>

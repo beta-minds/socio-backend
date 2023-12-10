@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { getParsedError } from "../scaffold-eth";
 import lighthouse from "@lighthouse-web3/sdk";
@@ -61,7 +59,7 @@ function FileUpload() {
   const handleModalCancel = () => {
     const modalElement = document.getElementById("file_upload");
     //@ts-ignore
-    modalElement.style.display = "none";
+    modalElement.close();
   };
 
   const handleShowModal = () => {
@@ -232,9 +230,23 @@ function FileUpload() {
     );
   };
 
+  useEffect(() => {
+    const modalElement = document.getElementById("file_upload");
+    //@ts-ignore
+    modalElement.addEventListener("close", () => {
+      setSteps(1);
+      setProgress(0);
+      setFile(null);
+      setSelectedShareWithFile([]);
+      setShareWith([]);
+      setSearchName("");
+      setIsPublic(false);
+    });
+  }, []);
+
   return (
     <div className="App">
-      <dialog id="file_upload" className="modal modal-lg modal-active">
+      <dialog id="file_upload" className="modal modal-lg">
         <div className="modal-box">
           <div className="mt-4 flex flex-col items-center">
             <ul className="steps ">
