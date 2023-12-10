@@ -239,8 +239,6 @@ function FileUpload() {
       setFile(null);
       setSelectedShareWithFile([]);
       setShareWith([]);
-      setSearchName("");
-      setIsPublic(false);
     });
   }, []);
 
