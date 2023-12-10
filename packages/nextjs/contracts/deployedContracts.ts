@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
+  84531: {
     YourContract: {
-      address: "0x851356ae760d987E095750cCeb3bC6014560891C",
+      address: "0xdF0F2Ae5c57f658c24883e23fD588ec45B45e987",
       abi: [
         {
           anonymous: false,
@@ -99,33 +99,75 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
           name: "getConnectionRequests",
           outputs: [
             {
-              internalType: "address[]",
+              components: [
+                {
+                  internalType: "address",
+                  name: "userAddress",
+                  type: "address",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+              ],
+              internalType: "struct YourContract.User[]",
               name: "",
-              type: "address[]",
+              type: "tuple[]",
             },
           ],
           stateMutability: "view",
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
           name: "getConnections",
           outputs: [
             {
-              internalType: "address[]",
+              components: [
+                {
+                  internalType: "address",
+                  name: "userAddress",
+                  type: "address",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+              ],
+              internalType: "struct YourContract.User[]",
               name: "",
-              type: "address[]",
+              type: "tuple[]",
             },
           ],
           stateMutability: "view",
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
           name: "getUsername",
           outputs: [
             {
