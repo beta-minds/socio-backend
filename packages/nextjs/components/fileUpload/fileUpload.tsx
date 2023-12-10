@@ -49,7 +49,7 @@ function FileUpload() {
         // @ts-ignore
         walletClient?.account?.address,
         shareWith.map(({ userAddress }) => userAddress),
-        cids[0].cid,
+        cids[cids.length - 1].cid,
         // @ts-ignore
         encryptionAuthState.signature,
       );
