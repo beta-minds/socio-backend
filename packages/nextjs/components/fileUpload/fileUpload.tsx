@@ -15,7 +15,6 @@ function FileUpload() {
   const [file, setFile] = useState(null);
   const [selectedShareWithFile, setSelectedShareWithFile] = useState([]);
   const [shareWith, setShareWith] = useState([]);
-  const [encryptionAuthState, setEncryptionAuthState] = useState();
 
   const [cids, setCids] = useLocalStorage("cids", []);
 
@@ -45,16 +44,19 @@ function FileUpload() {
   const handleShareWith = async () => {
     if (selectedShareWithFile.length > 0) {
       // @ts-ignore
+
+      const { signature } = await signAuthMessage();
+
       const promise = lighthouse.shareFile(
         // @ts-ignore
         walletClient?.account?.address,
         shareWith.map(({ userAddress }) => userAddress),
         cids[cids.length - 1].cid,
-        // @ts-ignore
-        encryptionAuthState.signature,
+        signature,
       );
       const res = await promise;
       console.log({ res });
+      notification.success("File shared successfully!");
     }
   };
 
@@ -112,9 +114,6 @@ function FileUpload() {
         console.error("Failed to sign the message.");
         return;
       }
-
-      // @ts-ignore
-      setEncryptionAuthState(encryptionAuth);
 
       const { signature, signerAddress } = encryptionAuth;
 
