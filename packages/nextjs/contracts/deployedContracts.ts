@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  84531: {
+  31337: {
     YourContract: {
-      address: "0xb61eF44E4f70ABa666d3451a6D96F30e7B2bf826",
+      address: "0x851356ae760d987E095750cCeb3bC6014560891C",
       abi: [
         {
           anonymous: false,
@@ -20,12 +20,12 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "string",
-              name: "cid",
-              type: "string",
+              internalType: "address",
+              name: "connectionAddress",
+              type: "address",
             },
           ],
-          name: "CIDSet",
+          name: "ConnectionAdded",
           type: "event",
         },
         {
@@ -34,17 +34,17 @@ const deployedContracts = {
             {
               indexed: true,
               internalType: "address",
-              name: "userAddress",
+              name: "fromAddress",
               type: "address",
             },
             {
               indexed: false,
               internalType: "address",
-              name: "friendAddress",
+              name: "toAddress",
               type: "address",
             },
           ],
-          name: "FriendAdded",
+          name: "ConnectionRequestSent",
           type: "event",
         },
         {
@@ -69,25 +69,12 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string",
-              name: "cid",
-              type: "string",
-            },
-          ],
-          name: "addCID",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "address",
-              name: "friendAddress",
+              name: "fromAddress",
               type: "address",
             },
           ],
-          name: "addFriend",
+          name: "acceptConnectionRequest",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -112,33 +99,21 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "string",
-              name: "username",
-              type: "string",
-            },
-          ],
-          name: "getCIDs",
+          inputs: [],
+          name: "getConnectionRequests",
           outputs: [
             {
-              internalType: "string[]",
+              internalType: "address[]",
               name: "",
-              type: "string[]",
+              type: "address[]",
             },
           ],
           stateMutability: "view",
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "string",
-              name: "username",
-              type: "string",
-            },
-          ],
-          name: "getFriends",
+          inputs: [],
+          name: "getConnections",
           outputs: [
             {
               internalType: "address[]",
@@ -179,6 +154,19 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "toAddress",
+              type: "address",
+            },
+          ],
+          name: "sendConnectionRequest",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
