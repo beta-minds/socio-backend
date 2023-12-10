@@ -15,8 +15,6 @@ function FileUpload() {
   const [file, setFile] = useState(null);
   const [selectedShareWithFile, setSelectedShareWithFile] = useState([]);
   const [shareWith, setShareWith] = useState([]);
-  const [searchName, setSearchName] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
 
   const [cids, setCids] = useLocalStorage("cids", []);
 
@@ -48,21 +46,6 @@ function FileUpload() {
     if (selectedShareWithFile.length > 0) {
       // change this
       setSelectedShareWithFile([]);
-    }
-  };
-
-  const handleIsPublicChange = () => {
-    setIsPublic(!isPublic);
-  };
-
-  const handleSearchChange = (e: any) => {
-    setSearchName(e.target.value);
-    //TODO: change this logic
-    if (e.target.value.length > 0) {
-      // change this
-      setShareWith([]);
-    } else {
-      setShareWith([]);
     }
   };
 
@@ -201,17 +184,6 @@ function FileUpload() {
         </form>
         <h3 className="font-bold text-lg mt-8">Share your Files</h3>
         <p className="py-4">Select the list of persons you want to share file with</p>
-        <div className="m-2  flex flex-row items-center">
-          <input type="checkbox" className="toggle toggle-md" checked={isPublic} onChange={handleIsPublicChange} />
-          <span className="ml-2">Make your file {isPublic ? "Private" : "Public"}</span>
-        </div>
-        <input
-          type="text"
-          placeholder="Search Name"
-          className="input input-bordered input-primary w-full max-w-xs"
-          onChange={handleSearchChange}
-          value={searchName}
-        />
         {shareWith.map(({ userAddress, username }) => {
           return (
             <div className="flex flex-row justify-between items-center mt-4" key={userAddress}>
